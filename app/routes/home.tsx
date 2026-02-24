@@ -1,121 +1,20 @@
-import React, { useState, useEffect, type ReactNode } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  Github, 
-  Copy, 
-  Check, 
-  AlertCircle, 
-  Loader2, 
-  Palette, 
-  Settings2,
-  Code2,
-  Terminal,
-  LayoutTemplate
-} from 'lucide-react';
-
-// --- Type Definitions ---
-interface GitHubUser {
-  login: string;
-  name?: string;
-  followers: number;
-  public_repos: number;
-}
-
-interface GitHubRepo {
-  stargazers_count: number;
-}
-
-interface UserStats {
-  name: string;
-  login: string;
-  followers: number;
-  public_repos: number;
-  total_stars: number;
-  commits: number;
-  prs: number;
-  issues: number;
-  contributed: number;
-}
-
-interface Theme {
-  name: string;
-  bgColor: string;
-  textColor: string;
-  titleColor: string;
-  iconColor: string;
-  borderColor: string;
-}
-
-interface ConfigState {
-  theme: string;
-  showIcons: boolean;
-  borderRadius: number;
-  bgColor: string;
-  textColor: string;
-  titleColor: string;
-  iconColor: string;
-  borderColor: string;
-  hideBorder: boolean;
-}
-
-type ColorSettingKey = keyof Pick<ConfigState, 'bgColor' | 'titleColor' | 'textColor' | 'iconColor'>;
-
-interface CopiedStates {
-  url: boolean;
-  md: boolean;
-  html: boolean;
-}
-
-// --- Default Themes ---
-const THEMES: Record<string, Theme> = {
-  dark: {
-    name: 'Dark',
-    bgColor: '#0d1117',
-    textColor: '#c9d1d9',
-    titleColor: '#58a6ff',
-    iconColor: '#58a6ff',
-    borderColor: '#30363d'
-  },
-  light: {
-    name: 'Light',
-    bgColor: '#ffffff',
-    textColor: '#24292f',
-    titleColor: '#0969da',
-    iconColor: '#0969da',
-    borderColor: '#d0d7de'
-  },
-  dracula: {
-    name: 'Dracula',
-    bgColor: '#282a36',
-    textColor: '#f8f8f2',
-    titleColor: '#ff79c6',
-    iconColor: '#bd93f9',
-    borderColor: '#44475a'
-  },
-  monokai: {
-    name: 'Monokai',
-    bgColor: '#272822',
-    textColor: '#f8f8f2',
-    titleColor: '#f92672',
-    iconColor: '#a6e22e',
-    borderColor: '#3e3d32'
-  }
-};
-
-// --- SVG Icons for the Generated Card ---
-const SVGIcons = {
-  star: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>',
-  commits: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>',
-  prs: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><path d="M13 6h3a2 2 0 0 1 2 2v7"></path><line x1="6" y1="9" x2="6" y2="21"></line></svg>',
-  issues: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>',
-  contributed: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>'
-};
-
-// Stable pseudo-random generator for mock stats
-function seededRandom(str: string): () => number {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) { hash = str.charCodeAt(i) + ((hash << 5) - hash); }
-  return function() { hash = Math.sin(hash) * 10000; return hash - Math.floor(hash); }
-}
+  Navigation,
+  Hero,
+  ThemePresets,
+  Customization,
+  StatsCard,
+  EmbedSnippets,
+  Footer,
+  THEMES,
+  seededRandom,
+  type UserStats,
+  type ConfigState,
+  type CopiedStates,
+  type GitHubUser,
+  type GitHubRepo
+} from '../components';
 
 export default function App() {
   const [username, setUsername] = useState<string>('torvalds');
@@ -124,7 +23,6 @@ export default function App() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   
-  // Customization State
   const [config, setConfig] = useState<ConfigState>({
     theme: 'dark',
     showIcons: true,
@@ -143,7 +41,6 @@ export default function App() {
     html: false
   });
 
-  // Fetch GitHub Stats
   const fetchStats = async (user: string): Promise<void> => {
     if (!user) return;
     setLoading(true);
@@ -164,7 +61,6 @@ export default function App() {
       
       const userData: GitHubUser = await userRes.json();
 
-      // Fetch repos for stars (limit 100 for prototype)
       const reposRes = await fetch(`https://api.github.com/users/${user}/repos?per_page=100`);
       let totalStars = 0;
       
@@ -181,7 +77,6 @@ export default function App() {
         followers: userData.followers,
         public_repos: userData.public_repos,
         total_stars: totalStars,
-        // Mocking extra stats for layout
         commits: Math.floor(rand() * 1000) + 50,
         prs: Math.floor(rand() * 200) + 10,
         issues: Math.floor(rand() * 50),
@@ -236,7 +131,6 @@ export default function App() {
         setCopiedStates(prev => ({ ...prev, [type]: false }));
       }, 2000);
     } catch (err) {
-      // Fallback
       const textArea = document.createElement("textarea");
       textArea.value = text;
       document.body.appendChild(textArea);
@@ -254,7 +148,6 @@ export default function App() {
     }
   };
 
-  // Generate Embed URLs
   const baseUrl = "https://gitstats-api.krisnantobiyuh.workers.dev/api";
   const queryParams = new URLSearchParams({
     username: username,
@@ -274,443 +167,53 @@ export default function App() {
   const markdownEmbed = `[![${username}'s GitHub Stats](${embedUrl})](https://github.com/${username})`;
   const htmlEmbed = `<a href="https://github.com/${username}">\n  <img src="${embedUrl}" alt="${username}'s GitHub Stats" />\n</a>`;
 
-  // Render SVG visually for live preview
-  const SVGRenderer = () => {
-    if (loading) {
-      return (
-        <div className="w-full h-48 flex flex-col items-center justify-center bg-white/[0.02] rounded-3xl border border-white/[0.08] shadow-inner">
-          <Loader2 className="w-8 h-8 animate-spin text-teal-400 mb-4" />
-          <p className="text-sm text-slate-400 font-medium">Crunching numbers...</p>
-        </div>
-      );
-    }
-
-    if (error) {
-      return (
-        <div className="w-full h-48 flex flex-col items-center justify-center bg-red-500/10 rounded-3xl border border-red-500/20">
-          <AlertCircle className="w-8 h-8 text-red-400 mb-4" />
-          <p className="text-sm text-red-400 font-medium text-center px-4">{error}</p>
-        </div>
-      );
-    }
-
-    if (!stats) return null;
-
-    // Calculate Grade based on stats
-    const calculateGrade = (s: UserStats) => {
-      const score = s.total_stars * 10 + s.commits * 2 + s.prs * 5;
-      if (score > 5000) return { grade: 'S+', percent: 95 };
-      if (score > 3000) return { grade: 'S', percent: 90 };
-      if (score > 1500) return { grade: 'A+', percent: 85 };
-      if (score > 1000) return { grade: 'A', percent: 80 };
-      if (score > 500) return { grade: 'A-', percent: 75 };
-      if (score > 250) return { grade: 'B+', percent: 65 };
-      if (score > 100) return { grade: 'B', percent: 55 };
-      return { grade: 'C', percent: 40 };
-    };
-
-    const { grade, percent } = calculateGrade(stats);
-
-    // Grade Ring Math
-    const radius = 42;
-    const circumference = 2 * Math.PI * radius;
-    const dashoffset = circumference - (percent / 100) * circumference;
-
-    // SVG Layout Constants
-    const width = 495;
-    const height = 195;
-    const padding = 25;
-    const lineHeight = 28;
-    const valueX = 220;
-    
-    return (
-      <svg
-        width="100%"
-        height="100%"
-        viewBox={`0 0 ${width} ${height}`}
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-auto drop-shadow-sm max-w-[495px] mx-auto"
-        style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
-      >
-        <rect
-          data-testid="card-bg"
-          x="0.5"
-          y="0.5"
-          rx={config.borderRadius}
-          height={height - 1}
-          width={width - 1}
-          fill={config.bgColor}
-          stroke={config.hideBorder ? 'none' : config.borderColor}
-          strokeOpacity={1}
-        />
-        
-        {/* Title */}
-        <g transform={`translate(${padding}, ${padding + 10})`}>
-          <text x="0" y="0" className="header" data-testid="header" fill={config.titleColor} fontWeight="bold" fontSize="18px">
-            {stats.name}'s GitHub Stats
-          </text>
-        </g>
-
-        {/* Stats List */}
-        <g transform={`translate(${padding}, ${padding + 45})`}>
-          {/* Stars */}
-          <g transform={`translate(0, ${lineHeight * 0})`}>
-            {config.showIcons && (
-              <g color={config.iconColor} dangerouslySetInnerHTML={{ __html: SVGIcons.star }} transform="translate(0, -12)" />
-            )}
-            <text x={config.showIcons ? 25 : 0} y="0" fill={config.textColor} fontSize="14px" fontWeight="600">Total Stars Earned:</text>
-            <text x={valueX} y="0" fill={config.textColor} fontSize="14px" fontWeight="500">{stats.total_stars.toLocaleString()}</text>
-          </g>
-          {/* Commits */}
-          <g transform={`translate(0, ${lineHeight * 1})`}>
-            {config.showIcons && (
-              <g color={config.iconColor} dangerouslySetInnerHTML={{ __html: SVGIcons.commits }} transform="translate(0, -12)" />
-            )}
-            <text x={config.showIcons ? 25 : 0} y="0" fill={config.textColor} fontSize="14px" fontWeight="600">Total Commits (2024):</text>
-            <text x={valueX} y="0" fill={config.textColor} fontSize="14px" fontWeight="500">{stats.commits.toLocaleString()}</text>
-          </g>
-          {/* PRs */}
-          <g transform={`translate(0, ${lineHeight * 2})`}>
-            {config.showIcons && (
-              <g color={config.iconColor} dangerouslySetInnerHTML={{ __html: SVGIcons.prs }} transform="translate(0, -12)" />
-            )}
-            <text x={config.showIcons ? 25 : 0} y="0" fill={config.textColor} fontSize="14px" fontWeight="600">Total PRs:</text>
-            <text x={valueX} y="0" fill={config.textColor} fontSize="14px" fontWeight="500">{stats.prs.toLocaleString()}</text>
-          </g>
-          {/* Issues */}
-          <g transform={`translate(0, ${lineHeight * 3})`}>
-            {config.showIcons && (
-              <g color={config.iconColor} dangerouslySetInnerHTML={{ __html: SVGIcons.issues }} transform="translate(0, -12)" />
-            )}
-            <text x={config.showIcons ? 25 : 0} y="0" fill={config.textColor} fontSize="14px" fontWeight="600">Total Issues:</text>
-            <text x={valueX} y="0" fill={config.textColor} fontSize="14px" fontWeight="500">{stats.issues.toLocaleString()}</text>
-          </g>
-          {/* Contributed to */}
-          <g transform={`translate(0, ${lineHeight * 4})`}>
-            {config.showIcons && (
-              <g color={config.iconColor} dangerouslySetInnerHTML={{ __html: SVGIcons.contributed }} transform="translate(0, -12)" />
-            )}
-            <text x={config.showIcons ? 25 : 0} y="0" fill={config.textColor} fontSize="14px" fontWeight="600">Contributed to (last year):</text>
-            <text x={valueX} y="0" fill={config.textColor} fontSize="14px" fontWeight="500">{stats.contributed.toLocaleString()}</text>
-          </g>
-        </g>
-
-        {/* Grade Ring */}
-        <g transform={`translate(390, 105)`}>
-          <circle cx="0" cy="0" r={radius} fill="none" stroke={config.iconColor} strokeWidth="6" strokeOpacity="0.2" />
-          <circle 
-            cx="0" 
-            cy="0" 
-            r={radius} 
-            fill="none" 
-            stroke={config.iconColor} 
-            strokeWidth="6" 
-            strokeDasharray={circumference} 
-            strokeDashoffset={dashoffset} 
-            strokeLinecap="round" 
-            transform="rotate(-90)" 
-          />
-          <text x="0" y="10" textAnchor="middle" fill={config.textColor} fontSize="32px" fontWeight="bold">
-            {grade}
-          </text>
-        </g>
-      </svg>
-    );
-  };
-
   return (
     <div className="min-h-screen bg-[#040814] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#111827] via-[#040814] to-[#02040A] text-slate-200 font-sans selection:bg-teal-500/30">
       
-      {/* Navigation */}
-      <nav className="border-b border-white/[0.08] bg-[#040814]/40 backdrop-blur-2xl sticky top-0 z-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16 sm:h-20">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-gradient-to-br from-white/10 to-white/0 border border-white/10 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
-                <Github className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-              </div>
-              <span className="font-bold text-lg sm:text-2xl tracking-tight text-white">GitStats<span className="text-teal-400">Embed</span></span>
-            </div>
-            <div className="hidden sm:flex items-center gap-6 text-sm font-medium">
-              <a href="#" className="text-slate-400 hover:text-white transition-colors">Documentation</a>
-              <a href="https://github.com" target="_blank" rel="noreferrer" className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-4 sm:px-5 py-2 rounded-xl transition-all backdrop-blur-md shadow-lg shadow-black/20">
-                Star on GitHub
-              </a>
-            </div>
-            <div className="sm:hidden flex items-center gap-2">
-              <a href="https://github.com" target="_blank" rel="noreferrer" className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-3 py-2 rounded-xl transition-all backdrop-blur-md shadow-lg shadow-black/20">
-                <Github className="w-4 h-4" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+      <Navigation />
+      
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         
-        {/* Hero Section */}
-        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20 relative">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[200px] sm:h-[300px] bg-teal-500/20 blur-[80px] sm:blur-[120px] rounded-full pointer-events-none"></div>
-          
-          <h1 className="relative text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 sm:mb-6 text-white">
-            Dynamic GitHub Stats for your <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-purple-400 to-orange-400">README</span>
-          </h1>
-          <p className="relative text-base sm:text-lg text-slate-400 mb-6 sm:mb-10 max-w-2xl mx-auto leading-relaxed px-4">
-            Generate highly customizable, instantly updating GitHub statistics cards. Easy to embed, fast to load, and beautiful by default.
-          </p>
-          
-          <form onSubmit={handleSearch} className="relative flex flex-col sm:flex-row gap-3 max-w-lg mx-auto w-full">
-            <div className="relative flex-1 group">
-              <span className="absolute top-1/2 -translate-y-1/2 left-0 pl-3 sm:pl-4 pointer-events-none text-slate-500 font-mono text-xs sm:text-sm group-focus-within:text-teal-400 transition-colors z-10 pt-1 sm:pt-0"
-                   style={{ fontSize: '0.875rem' }}>
-                github.com/
-              </span>
-              <input 
-                type="text" 
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                placeholder="username"
-                className="w-full pl-[105px] sm:pl-[110px] pr-3 sm:pr-4 py-3 sm:py-4 bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl shadow-inner focus:ring-2 focus:ring-teal-500/30 focus:border-teal-400 outline-none transition-all text-white placeholder-slate-600 font-medium text-sm"
-              />
-            </div>
-            <button type="submit" className="bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 border border-teal-400/30 text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-2xl font-bold shadow-[0_0_20px_rgba(45,212,191,0.25)] hover:shadow-[0_0_25px_rgba(45,212,191,0.4)] transition-all flex items-center gap-2 text-sm sm:text-base">
-              Generate
-            </button>
-          </form>
-
-          {/* Mobile Live Preview - Shows under Generate button on mobile only */}
-          <div className="lg:hidden mt-6">
-            <div className="bg-white/[0.02] backdrop-blur-2xl p-6 rounded-3xl border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] flex flex-col items-center justify-center min-h-[280px] relative overflow-hidden group">
-              <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] bg-teal-500/10 rounded-full blur-[80px] pointer-events-none"></div>
-              <div className="w-full max-w-[400px] relative z-10 transition-transform hover:scale-[1.02] duration-500">
-                <SVGRenderer />
-              </div>
-            </div>
-          </div>
-        </div>
+        <Hero 
+          username={username}
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+          handleSearch={handleSearch}
+          stats={stats}
+          loading={loading}
+          error={error}
+          config={config}
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 relative z-10">
           
-          {/* Left Column: Controls & Settings */}
           <div className="lg:col-span-4 space-y-4 sm:space-y-6">
-            
-            {/* Theme Presets */}
-            <div className="bg-white/[0.02] backdrop-blur-2xl p-5 sm:p-7 rounded-3xl border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] relative overflow-hidden group">
-              <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              
-              <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-                <div className="p-2.5 rounded-full bg-gradient-to-br from-purple-500/20 to-purple-500/5 border border-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.15)]">
-                  <LayoutTemplate className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
-                </div>
-                <h3 className="font-semibold text-base sm:text-lg text-white">Theme Presets</h3>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                {Object.entries(THEMES).map(([key, theme]) => (
-                  <button
-                    key={key}
-                    onClick={() => handleThemeChange(key)}
-                    className={`py-2 px-2.5 sm:py-2.5 px-3 rounded-2xl border text-xs sm:text-sm font-semibold transition-all duration-300 ${
-                      config.theme === key 
-                        ? 'border-teal-500/50 bg-teal-500/10 text-teal-300 shadow-[0_0_15px_rgba(45,212,191,0.15)]' 
-                        : 'border-white/5 bg-white/[0.03] text-slate-400 hover:bg-white/10 hover:text-slate-200 hover:border-white/10'
-                    }`}
-                  >
-                    {theme.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Customization Options */}
-            <div className="bg-white/[0.02] backdrop-blur-2xl p-5 sm:p-7 rounded-3xl border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] relative overflow-hidden group">
-              <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              
-              <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-                <div className="p-2.5 rounded-full bg-gradient-to-br from-orange-500/20 to-orange-500/5 border border-orange-500/20 shadow-[0_0_15px_rgba(249,115,22,0.15)]">
-                  <Settings2 className="w-4 h-4 sm:w-5 sm:h-5 text-orange-400" />
-                </div>
-                <h3 className="font-semibold text-base sm:text-lg text-white">Customization</h3>
-              </div>
-              
-              <div className="space-y-4 sm:space-y-6">
-                {/* Toggles */}
-                <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-2xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/5">
-                  <label className="text-xs sm:text-sm font-medium text-slate-300 cursor-pointer pl-1">Show Icons</label>
-                  <button 
-                    onClick={() => setConfig(prev => ({ ...prev, showIcons: !prev.showIcons }))}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-[#040814] ${config.showIcons ? 'bg-teal-500' : 'bg-white/10'}`}
-                  >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${config.showIcons ? 'translate-x-6 shadow-md' : 'translate-x-1'}`} />
-                  </button>
-                </div>
-
-                <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-2xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/5">
-                  <label className="text-xs sm:text-sm font-medium text-slate-300 cursor-pointer pl-1">Hide Border</label>
-                  <button 
-                    onClick={() => setConfig(prev => ({ ...prev, hideBorder: !prev.hideBorder }))}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-[#040814] ${config.hideBorder ? 'bg-teal-500' : 'bg-white/10'}`}
-                  >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${config.hideBorder ? 'translate-x-6 shadow-md' : 'translate-x-1'}`} />
-                  </button>
-                </div>
-
-                {/* Border Radius */}
-                <div className="px-3 pt-2">
-                  <div className="flex justify-between items-center mb-3 sm:mb-4">
-                    <label className="text-xs sm:text-sm font-medium text-slate-300">Border Radius</label>
-                    <span className="text-xs font-mono text-slate-400 bg-black/40 px-2.5 py-1 rounded-lg border border-white/5">{config.borderRadius}px</span>
-                  </div>
-                  <input 
-                    type="range" 
-                    min="0" max="30" 
-                    value={config.borderRadius}
-                    onChange={(e) => setConfig(prev => ({ ...prev, borderRadius: parseInt(e.target.value) }))}
-                    className="w-full h-2 bg-black/50 rounded-lg appearance-none cursor-pointer accent-teal-400 border border-white/5 shadow-inner"
-                  />
-                </div>
-
-                <div className="pt-6 border-t border-white/[0.06] space-y-3">
-                  <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 px-1">
-                    <div className="p-1.5 rounded-full bg-gradient-to-br from-blue-500/20 to-blue-500/5 border border-blue-500/20">
-                      <Palette className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-400" />
-                    </div>
-                    <span className="text-xs sm:text-sm font-semibold text-slate-200">Colors</span>
-                  </div>
-                  
-                  {[
-                    { label: 'Background', key: 'bgColor' as ColorSettingKey },
-                    { label: 'Title', key: 'titleColor' as ColorSettingKey },
-                    { label: 'Text', key: 'textColor' as ColorSettingKey },
-                    { label: 'Icons', key: 'iconColor' as ColorSettingKey },
-                  ].map((colorSetting) => (
-                    <div key={colorSetting.key} className="flex items-center justify-between p-2 sm:p-2.5 rounded-2xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/5">
-                      <label className="text-xs sm:text-sm text-slate-300">{colorSetting.label}</label>
-                      <div className="flex items-center gap-2 sm:gap-3">
-                        <span className="text-xs text-slate-400 font-mono uppercase bg-black/40 px-2.5 py-1 rounded-lg border border-white/5">{config[colorSetting.key]}</span>
-                        <div className="relative w-7 h-7 sm:w-8 sm:h-8 rounded-xl overflow-hidden border border-white/20 shadow-lg cursor-pointer hover:scale-110 transition-transform">
-                          <input 
-                            type="color" 
-                            value={config[colorSetting.key]}
-                            onChange={(e) => handleColorChange(colorSetting.key, e.target.value)}
-                            className="absolute -top-2 -left-2 w-12 h-12 cursor-pointer"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+            <ThemePresets config={config} handleThemeChange={handleThemeChange} />
+            <Customization config={config} setConfig={setConfig} handleColorChange={handleColorChange} />
           </div>
 
-          {/* Right Column: Preview & Embed */}
           <div className="lg:col-span-8 space-y-4 sm:space-y-6">
             
-            {/* Live Preview - Hidden on mobile, shown on desktop (lg+) */}
             <div className="hidden lg:block bg-white/[0.02] backdrop-blur-2xl p-6 sm:p-10 rounded-3xl border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] flex flex-col items-center justify-center min-h-[280px] sm:min-h-[350px] relative overflow-hidden group">
               <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              
-              {/* Soft glow behind SVG */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] sm:w-[350px] h-[280px] sm:h-[350px] bg-teal-500/10 rounded-full blur-[80px] sm:blur-[100px] pointer-events-none"></div>
-              
               <div className="w-full max-w-[400px] sm:max-w-[495px] relative z-10 transition-transform hover:scale-[1.02] duration-500">
-                <SVGRenderer />
+                <StatsCard stats={stats} loading={loading} error={error} config={config} />
               </div>
             </div>
 
-            {/* Embed Snippets */}
-            <div className="bg-white/[0.02] backdrop-blur-2xl rounded-3xl border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] overflow-hidden relative group">
-              <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              
-              <div className="border-b border-white/[0.08] px-4 sm:px-8 py-4 sm:py-5 bg-white/[0.01]">
-                <h3 className="font-semibold text-base sm:text-lg flex items-center gap-3 sm:gap-4 text-white">
-                  <div className="p-2 rounded-full bg-gradient-to-br from-teal-500/20 to-teal-500/5 border border-teal-500/20 shadow-[0_0_15px_rgba(45,212,191,0.15)]">
-                    <Code2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-teal-400" />
-                  </div>
-                  Embed in your README
-                </h3>
-              </div>
-              
-              <div className="p-4 sm:p-8 space-y-6 sm:space-y-8">
-                
-                {/* Markdown */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between px-1">
-                    <label className="text-xs sm:text-sm font-semibold text-slate-300">Markdown</label>
-                    <button 
-                      onClick={() => copyToClipboard(markdownEmbed, 'md')}
-                      className="text-xs flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/5 hover:border-white/10 transition-all"
-                    >
-                      {copiedStates.md ? <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-teal-400" /> : <Copy className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
-                      {copiedStates.md ? 'Copied!' : 'Copy code'}
-                    </button>
-                  </div>
-                  <div className="relative group/code">
-                    <pre className="p-3 sm:p-5 bg-black/40 border border-white/[0.08] rounded-2xl text-xs sm:text-sm font-mono text-slate-400 overflow-x-auto whitespace-pre-wrap break-all shadow-inner group-hover/code:border-white/15 transition-colors">
-                      {markdownEmbed}
-                    </pre>
-                  </div>
-                </div>
-
-                {/* HTML */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between px-1">
-                    <label className="text-xs sm:text-sm font-semibold text-slate-300">HTML</label>
-                    <button 
-                      onClick={() => copyToClipboard(htmlEmbed, 'html')}
-                      className="text-xs flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/5 hover:border-white/10 transition-all"
-                    >
-                      {copiedStates.html ? <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-teal-400" /> : <Copy className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
-                      {copiedStates.html ? 'Copied!' : 'Copy code'}
-                    </button>
-                  </div>
-                  <div className="relative group/code">
-                    <pre className="p-3 sm:p-5 bg-black/40 border border-white/[0.08] rounded-2xl text-xs sm:text-sm font-mono text-slate-400 overflow-x-auto whitespace-pre-wrap break-all shadow-inner group-hover/code:border-white/15 transition-colors">
-                      {htmlEmbed}
-                    </pre>
-                  </div>
-                </div>
-
-                {/* Direct URL */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between px-1">
-                    <label className="text-xs sm:text-sm font-semibold text-slate-300">Direct URL</label>
-                    <button 
-                      onClick={() => copyToClipboard(embedUrl, 'url')}
-                      className="text-xs flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/5 hover:border-white/10 transition-all"
-                    >
-                      {copiedStates.url ? <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-teal-400" /> : <Copy className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
-                      {copiedStates.url ? 'Copied!' : 'Copy URL'}
-                    </button>
-                  </div>
-                  <div className="relative group/code">
-                    <div className="p-3 sm:p-4 bg-black/40 border border-white/[0.08] rounded-2xl flex items-center gap-3 sm:gap-4 overflow-hidden shadow-inner group-hover/code:border-white/15 transition-colors">
-                      <div className="p-1.5 sm:p-2 rounded-full bg-white/5 border border-white/10 shadow-sm">
-                        <Terminal className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 shrink-0" />
-                      </div>
-                      <span className="text-xs sm:text-sm font-mono text-slate-400 truncate flex-1">
-                        {embedUrl}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
+            <EmbedSnippets 
+              embedUrl={embedUrl}
+              markdownEmbed={markdownEmbed}
+              htmlEmbed={htmlEmbed}
+              copiedStates={copiedStates}
+              copyToClipboard={copyToClipboard}
+            />
           </div>
         </div>
       </main>
 
-      <footer className="border-t border-white/[0.08] mt-16 sm:mt-24 py-6 sm:py-10 bg-[#040814]/80 backdrop-blur-2xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-xs sm:text-sm text-slate-500 font-medium tracking-wide px-4">
-            GitStats Embed is a prototype built for demonstration. It uses the GitHub public API.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
