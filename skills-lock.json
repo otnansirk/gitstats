@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "skills": {
+    "add-provider-doc": {
+      "source": "lobehub/lobehub",
+      "sourceType": "github",
+      "computedHash": "e5af5018e728fadc3d288471b81c119c9e82ea1163f7641ed68736d2210162c6"
+    },
+    "data-fetching": {
+      "source": "lobehub/lobehub",
+      "sourceType": "github",
+      "computedHash": "52a46e9baedf44267f1323d02f4533fdd99839dd1b10951610643ae8996ba566"
+    },
+    "debug": {
+      "source": "lobehub/lobehub",
+      "sourceType": "github",
+      "computedHash": "1cfb33a00081de8417b741b680d4fe530c5e259f8610b6c610fc3f366bde0234"
+    },
+    "i18n": {
+      "source": "lobehub/lobehub",
+      "sourceType": "github",
+      "computedHash": "b411c62147bb1186721d53f58e6093dfe93a141a4cfe49187869e416bb9c5ea2"
+    },
+    "project-overview": {
+      "source": "lobehub/lobehub",
+      "sourceType": "github",
+      "computedHash": "f7c3b6facfc2c7543b5583c0c9ffb24f1399bbc92355d4c763c200f9e07b4998"
+    },
+    "react": {
+      "source": "lobehub/lobehub",
+      "sourceType": "github",
+      "computedHash": "ec98a32434475c4bd1826b8aa9c62efda8c38030bb9f1450cfd2d736f3af99e6"
+    },
+    "recent-data": {
+      "source": "lobehub/lobehub",
+      "sourceType": "github",
+      "computedHash": "c53bad48a021140e76baac533fc04af053bf8c86cf549b776ed8ece3bcc8789b"
+    },
+    "store-data-structures": {
+      "source": "lobehub/lobehub",
+      "sourceType": "github",
+      "computedHash": "df2b5007084cd015ea70d2318be20e4b6c104b807ac856dff07a3a4fe072951d"
+    },
+    "testing": {
+      "source": "lobehub/lobehub",
+      "sourceType": "github",
+      "computedHash": "fd02540d15c87cb7964700bbd5d8065fb6ebca1473181b45cf2b2d172abc84fe"
+    },
+    "typescript": {
+      "source": "lobehub/lobehub",
+      "sourceType": "github",
+      "computedHash": "7f33161bce3aeebc7ab66d385865b79cacfe63d2bdbbb8059c4f17ec653c078c"
+    },
+    "version-release": {
+      "source": "lobehub/lobehub",
+      "sourceType": "github",
+      "computedHash": "db1b635822bd0c3d9a4a96d481ccf8e3852d9b5419e39c5f994ab9653b09491b"
+    },
+    "zustand": {
+      "source": "lobehub/lobehub",
+      "sourceType": "github",
+      "computedHash": "ef9a6e8dea1837804918bc6533e52b6e05b4589dbe9c26af692111413328a13c"
+    }
+  }
+}
