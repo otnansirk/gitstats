@@ -1,3 +1,12 @@
+export interface GitHubProfile {
+  login: string;
+  name?: string;
+  avatar_url: string;
+  html_url: string;
+  followers: number;
+  public_repos: number;
+}
+
 export interface GitHubUser {
   login: string;
   name?: string;

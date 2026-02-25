@@ -7,19 +7,21 @@ import {
   StatsCard,
   EmbedSnippets,
   Footer,
+  ProfileInfo,
   THEMES,
   seededRandom,
   type UserStats,
   type ConfigState,
   type CopiedStates,
-  type GitHubUser,
+  type GitHubProfile,
   type GitHubRepo
 } from '../components';
 
 export default function App() {
-  const [username, setUsername] = useState<string>('');
-  const [searchInput, setSearchInput] = useState<string>('');
+  const [username, setUsername] = useState<string>('otnansirk');
+  const [searchInput, setSearchInput] = useState<string>('otnansirk');
   const [stats, setStats] = useState<UserStats | null>(null);
+  const [profile, setProfile] = useState<GitHubProfile | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   
@@ -59,7 +61,7 @@ export default function App() {
         throw new Error("Failed to fetch user data");
       }
       
-      const userData: GitHubUser = await userRes.json();
+      const userData: GitHubProfile = await userRes.json();
 
       const reposRes = await fetch(`https://api.github.com/users/${user}/repos?per_page=100`);
       let totalStars = 0;
@@ -72,6 +74,15 @@ export default function App() {
       const rand = seededRandom(userData.login);
       console.log(userData, "OOOO", rand());
       
+      setProfile({
+        login: userData.login,
+        name: userData.name,
+        avatar_url: userData.avatar_url,
+        html_url: userData.html_url,
+        followers: userData.followers,
+        public_repos: userData.public_repos,
+      });
+
       setStats({
         name: userData.name || userData.login,
         login: userData.login,
@@ -185,6 +196,8 @@ export default function App() {
           error={error}
           config={config}
         />
+
+        <ProfileInfo profile={profile} loading={loading} error={error} />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 relative z-10">
           

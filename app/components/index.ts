@@ -5,5 +5,6 @@ export { Customization } from './Customization';
 export { StatsCard } from './StatsCard';
 export { EmbedSnippets } from './EmbedSnippets';
 export { Footer } from './Footer';
+export { ProfileInfo } from './ProfileInfo';
 export * from './types';
 export * from './constants';
