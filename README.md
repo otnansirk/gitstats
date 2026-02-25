@@ -2,7 +2,7 @@
 
 Dynamic GitHub statistics cards for your README. Generate customizable, instantly updating cards showing stars, commits, PRs, issues, and more.
 
-[Open in Gitstats](https://gitstats.kirimna.com)
+[![Open in Gitstats](./public/btn.svg)](https://gitstats.kirimna.com)
 
 ## Features
 
