@@ -17,8 +17,8 @@ import {
 } from '../components';
 
 export default function App() {
-  const [username, setUsername] = useState<string>('torvalds');
-  const [searchInput, setSearchInput] = useState<string>('torvalds');
+  const [username, setUsername] = useState<string>('');
+  const [searchInput, setSearchInput] = useState<string>('');
   const [stats, setStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -70,7 +70,8 @@ export default function App() {
       }
 
       const rand = seededRandom(userData.login);
-
+      console.log(userData, "OOOO", rand());
+      
       setStats({
         name: userData.name || userData.login,
         login: userData.login,
@@ -194,7 +195,7 @@ export default function App() {
 
           <div className="lg:col-span-8 space-y-4 sm:space-y-6">
             
-            <div className="hidden lg:block bg-white/[0.02] backdrop-blur-2xl p-6 sm:p-10 rounded-3xl border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] flex flex-col items-center justify-center min-h-[280px] sm:min-h-[350px] relative overflow-hidden group">
+            <div className="hidden lg:flex bg-white/[0.02] backdrop-blur-2xl p-6 sm:p-10 rounded-3xl border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] flex flex-col items-center justify-center min-h-[280px] sm:min-h-[350px] relative overflow-hidden group">
               <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] sm:w-[350px] h-[280px] sm:h-[350px] bg-teal-500/10 rounded-full blur-[80px] sm:blur-[100px] pointer-events-none"></div>
               <div className="w-full max-w-[400px] sm:max-w-[495px] relative z-10 transition-transform hover:scale-[1.02] duration-500">

@@ -1,6 +1,31 @@
 {
   "version": 1,
   "skills": {
+    "Agents": {
+      "source": "danielmiessler/Personal_AI_Infrastructure",
+      "sourceType": "github",
+      "computedHash": "409e3c8fe3770ca5fb1814238c62be7c7457946d7f0d0dd65696fae31e89bae4"
+    },
+    "Browser": {
+      "source": "danielmiessler/Personal_AI_Infrastructure",
+      "sourceType": "github",
+      "computedHash": "3ca133930741b2ae0c2ebadce2fc4ab16ef73005321ff1f7770afd472c9b0986"
+    },
+    "CORE": {
+      "source": "danielmiessler/Personal_AI_Infrastructure",
+      "sourceType": "github",
+      "computedHash": "fb3cd85621032851b5b2dc25f7debc737343a7f62c30f80e6ff234c5626a53e5"
+    },
+    "Cloudflare": {
+      "source": "danielmiessler/Personal_AI_Infrastructure",
+      "sourceType": "github",
+      "computedHash": "f0a8b9ff4397cb83346219d02882e90d1dba8f4d1ca93c74323abbe1e12123ba"
+    },
+    "Prompting": {
+      "source": "danielmiessler/Personal_AI_Infrastructure",
+      "sourceType": "github",
+      "computedHash": "65cd28de2382491d3777cfe1bc72d9c68446d3ca225fc4f3455d68e16c86d47d"
+    },
     "add-provider-doc": {
       "source": "lobehub/lobehub",
       "sourceType": "github",

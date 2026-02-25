@@ -1,0 +1,14 @@
+{
+  "name": "github-stats-worker",
+  "version": "1.0.0",
+  "description": "GitHub Stats Card Cloudflare Worker",
+  "main": "src/index.ts",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241127.0",
+    "wrangler": "^3.101.0"
+  }
+}
