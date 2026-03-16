@@ -40,7 +40,7 @@ Your application will be available at `http://localhost:5173`.
 ### Example Embed
 
 ```markdown
-[![your-username's GitHub Stats](https://gitstats-api.krisnantobiyuh.workers.dev/api?username=your-username&theme=dark)](https://github.com/your-username)
+[![your-username's GitHub Stats](https://gitstats.kirimna.com/api?username=your-username&theme=dark)](https://github.com/your-username)
 ```
 
 ## Building for Production
