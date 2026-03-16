@@ -13,12 +13,12 @@ export function Navigation() {
           </div>
           <div className="hidden sm:flex items-center gap-6 text-sm font-medium">
             <a href="#" className="text-slate-400 hover:text-white transition-colors">Documentation</a>
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-4 sm:px-5 py-2 rounded-xl transition-all backdrop-blur-md shadow-lg shadow-black/20">
+            <a href="https://github.com/otnansirk/gitstats" target="_blank" rel="noreferrer" className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-4 sm:px-5 py-2 rounded-xl transition-all backdrop-blur-md shadow-lg shadow-black/20">
               Star on GitHub
             </a>
           </div>
           <div className="sm:hidden flex items-center gap-2">
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-3 py-2 rounded-xl transition-all backdrop-blur-md shadow-lg shadow-black/20">
+            <a href="https://github.com/otnansirk/gitstats" target="_blank" rel="noreferrer" className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-3 py-2 rounded-xl transition-all backdrop-blur-md shadow-lg shadow-black/20">
               <Github className="w-4 h-4" />
             </a>
           </div>
