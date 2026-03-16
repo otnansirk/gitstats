@@ -48,6 +48,111 @@ export function StatsCard({ stats, loading, error, config }: StatsCardProps) {
   const circumference = 2 * Math.PI * radius;
   const dashoffset = circumference - (percent / 100) * circumference;
 
+  if (config.layout === 'gauge') {
+    const width = 400;
+    const height = 400;
+    const cx = width / 2;
+    const cy = 240;
+    const gaugeRadius = 130;
+
+    let gaugeTicks = [];
+    const numTicks = 60;
+    for (let i = 0; i <= numTicks; i++) {
+      const p = i / numTicks;
+      const hue = (1 - p) * 120;
+      const color = `hsl(${hue}, 100%, 50%)`;
+      const angle = Math.PI - p * Math.PI;
+      const x1 = cx + (gaugeRadius - 25) * Math.cos(angle);
+      const y1 = cy - (gaugeRadius - 25) * Math.sin(angle);
+      const x2 = cx + gaugeRadius * Math.cos(angle);
+      const y2 = cy - gaugeRadius * Math.sin(angle);
+      gaugeTicks.push(
+        <line key={`tick-${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth="3" />
+      );
+    }
+
+    for (let i = 0; i <= 10; i++) {
+      const p = i / 10;
+      const angle = Math.PI - p * Math.PI;
+      const x1 = cx + (gaugeRadius - 45) * Math.cos(angle);
+      const y1 = cy - (gaugeRadius - 45) * Math.sin(angle);
+      const x2 = cx + (gaugeRadius - 35) * Math.cos(angle);
+      const y2 = cy - (gaugeRadius - 35) * Math.sin(angle);
+      gaugeTicks.push(
+        <line key={`itick-${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke={config.textColor} strokeOpacity="0.3" strokeWidth="2" />
+      );
+    }
+
+    const scorePercent = percent / 100;
+    const scoreAngle = Math.PI - scorePercent * Math.PI;
+    const needleLength = gaugeRadius - 40;
+    const nx = cx + needleLength * Math.cos(scoreAngle);
+    const ny = cy - needleLength * Math.sin(scoreAngle);
+
+    const is3D = config.theme === 'isometri';
+    const offset = is3D ? 8 : 0;
+    const rectWidth = width - 1 - offset;
+    const rectHeight = height - 1 - offset;
+
+    return (
+      <svg
+        width="100%"
+        height="100%"
+        viewBox={`0 0 ${width} ${height}`}
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-full h-auto drop-shadow-sm max-w-[400px] mx-auto"
+        style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+      >
+        {is3D && (
+          <rect
+            x={0.5 + offset}
+            y={0.5 + offset}
+            rx={config.borderRadius}
+            height={rectHeight}
+            width={rectWidth}
+            fill={config.borderColor}
+            stroke="none"
+          />
+        )}
+        <rect
+          data-testid="card-bg"
+          x="0.5"
+          y="0.5"
+          rx={config.borderRadius}
+          height={rectHeight}
+          width={rectWidth}
+          fill={config.bgColor}
+          stroke={config.hideBorder ? 'none' : config.borderColor}
+          strokeOpacity={1}
+        />
+        
+        <text x={cx} y="50" textAnchor="middle" fill={config.titleColor} fontWeight="bold" fontSize="22px">
+          GitHub Stats {new Date().getFullYear()}
+        </text>
+        
+        {gaugeTicks}
+        <line x1={cx} y1={cy} x2={nx} y2={ny} stroke={config.textColor} strokeWidth="4" strokeLinecap="round" />
+        <circle cx={cx} cy={cy} r="6" fill={config.textColor} />
+        
+        <text x={cx} y={cy + 70} textAnchor="middle" fill={config.textColor} fontSize="64px" fontWeight="900">
+          {grade}
+        </text>
+        
+        <g transform={`translate(0, ${cy + 120})`}>
+          <text x={width / 6} y="0" textAnchor="middle" fill={config.textColor} opacity="0.6" fontSize="14px">Commits</text>
+          <text x={width / 6} y="25" textAnchor="middle" fill={config.textColor} fontSize="20px" fontWeight="bold">{stats.commits}</text>
+
+          <text x={width / 2} y="0" textAnchor="middle" fill={config.textColor} opacity="0.6" fontSize="14px">Contributed</text>
+          <text x={width / 2} y="25" textAnchor="middle" fill={config.textColor} fontSize="20px" fontWeight="bold">{stats.contributed}</text>
+
+          <text x={width * 5 / 6} y="0" textAnchor="middle" fill={config.textColor} opacity="0.6" fontSize="14px">Star Earn</text>
+          <text x={width * 5 / 6} y="25" textAnchor="middle" fill={config.textColor} fontSize="20px" fontWeight="bold">{stats.total_stars}</text>
+        </g>
+      </svg>
+    );
+  }
+
   const width = 495;
   const height = 195;
   const padding = 25;

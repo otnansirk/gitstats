@@ -49,6 +49,7 @@ export interface ConfigState {
   iconColor: string;
   borderColor: string;
   hideBorder: boolean;
+  layout: string;
 }
 
 export type ColorSettingKey = keyof Pick<ConfigState, 'bgColor' | 'titleColor' | 'textColor' | 'iconColor'>;

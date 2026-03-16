@@ -34,7 +34,8 @@ export default function App() {
     titleColor: THEMES.dark.titleColor,
     iconColor: THEMES.dark.iconColor,
     borderColor: THEMES.dark.borderColor,
-    hideBorder: false
+    hideBorder: false,
+    layout: 'classic'
   });
 
   const [copiedStates, setCopiedStates] = useState<CopiedStates>({
@@ -119,6 +120,7 @@ export default function App() {
     setConfig(prev => ({
       ...prev,
       theme: themeKey,
+      layout: themeKey === 'gauge' ? 'gauge' : 'classic',
       bgColor: theme.bgColor,
       textColor: theme.textColor,
       titleColor: theme.titleColor,
@@ -164,6 +166,7 @@ export default function App() {
   const queryParams = new URLSearchParams({
     username: username,
     theme: config.theme,
+    layout: config.layout,
     show_icons: config.showIcons.toString(),
     radius: config.borderRadius.toString(),
     ...(config.theme === 'custom' && {

@@ -40,6 +40,14 @@ export const THEMES: Record<string, Theme> = {
     titleColor: '#00C896',
     iconColor: '#FF4D6D',
     borderColor: '#2D333B'
+  },
+  gauge: {
+    name: 'Gauge',
+    bgColor: '#ffffff',
+    textColor: '#334155',
+    titleColor: '#334155',
+    iconColor: '#0ea5e9',
+    borderColor: '#e2e8f0'
   }
 };
 

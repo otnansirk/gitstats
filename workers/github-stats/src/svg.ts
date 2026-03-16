@@ -13,6 +13,7 @@ export interface RenderConfig extends ThemeConfig {
   borderRadius: number;
   hideBorder: boolean;
   themeName?: string;
+  layout: string;
 }
 
 export const THEMES: Record<string, ThemeConfig> = {
@@ -51,6 +52,13 @@ export const THEMES: Record<string, ThemeConfig> = {
     iconColor: '#FF4D6D',
     borderColor: '#2D333B',
   },
+  gauge: {
+    bgColor: '#ffffff',
+    textColor: '#334155',
+    titleColor: '#334155',
+    iconColor: '#0ea5e9',
+    borderColor: '#e2e8f0',
+  },
 };
 
 const SVGIcons = {
@@ -71,6 +79,7 @@ function parseTheme(searchParams: URLSearchParams): RenderConfig {
     showIcons: true,
     borderRadius: 8,
     hideBorder: false,
+    layout: 'classic',
   };
 
   const themeKey = searchParams.get('theme');
@@ -103,6 +112,7 @@ function parseTheme(searchParams: URLSearchParams): RenderConfig {
 
   config.showIcons = searchParams.get('show_icons') !== 'false';
   config.hideBorder = searchParams.get('hide_border') === 'true';
+  config.layout = searchParams.get('layout') || 'classic';
   if (searchParams.has('radius')) {
     config.borderRadius = parseInt(searchParams.get('radius')!) || 0;
   }
@@ -115,6 +125,76 @@ export function buildSVG(
   grade: GradeResult,
   searchParams: URLSearchParams,
 ): string {
+  const config = parseTheme(searchParams);
+
+  if (config.layout === 'gauge') {
+    const width = 400;
+    const height = 400;
+    const cx = width / 2;
+    const cy = 240;
+    const radius = 130;
+
+    let gaugeTicks = '';
+    const numTicks = 60;
+    for (let i = 0; i <= numTicks; i++) {
+      const percent = i / numTicks;
+      const hue = (1 - percent) * 120;
+      const color = `hsl(${hue}, 100%, 50%)`;
+      const angle = Math.PI - percent * Math.PI;
+      const x1 = cx + (radius - 25) * Math.cos(angle);
+      const y1 = cy - (radius - 25) * Math.sin(angle);
+      const x2 = cx + radius * Math.cos(angle);
+      const y2 = cy - radius * Math.sin(angle);
+      gaugeTicks += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="3" />\n`;
+    }
+
+    for (let i = 0; i <= 10; i++) {
+      const percent = i / 10;
+      const angle = Math.PI - percent * Math.PI;
+      const x1 = cx + (radius - 45) * Math.cos(angle);
+      const y1 = cy - (radius - 45) * Math.sin(angle);
+      const x2 = cx + (radius - 35) * Math.cos(angle);
+      const y2 = cy - (radius - 35) * Math.sin(angle);
+      gaugeTicks += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${config.textColor}" stroke-opacity="0.3" stroke-width="2" />\n`;
+    }
+
+    const scorePercent = grade.percent / 100;
+    const scoreAngle = Math.PI - scorePercent * Math.PI;
+    const needleLength = radius - 40;
+    const nx = cx + needleLength * Math.cos(scoreAngle);
+    const ny = cy - needleLength * Math.sin(scoreAngle);
+
+    const is3D = config.themeName === 'isometri';
+    const offset = is3D ? 8 : 0;
+    const rectWidth = width - 1 - offset;
+    const rectHeight = height - 1 - offset;
+
+    return `
+<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none" xmlns="http://www.w3.org/2000/svg" style="font-family: system-ui, -apple-system, sans-serif;">
+  ${is3D ? `<rect x="${0.5 + offset}" y="${0.5 + offset}" rx="${config.borderRadius}" height="${rectHeight}" width="${rectWidth}" fill="${config.borderColor}" stroke="none" />` : ''}
+  <rect x="0.5" y="0.5" rx="${config.borderRadius}" height="${rectHeight}" width="${rectWidth}" fill="${config.bgColor}" stroke="${config.hideBorder ? 'none' : config.borderColor}" stroke-opacity="1" />
+  
+  <text x="${cx}" y="50" text-anchor="middle" fill="${config.titleColor}" font-weight="bold" font-size="22px">GitHub Stats ${new Date().getFullYear()}</text>
+  
+  ${gaugeTicks}
+  <line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="${config.textColor}" stroke-width="4" stroke-linecap="round" />
+  <circle cx="${cx}" cy="${cy}" r="6" fill="${config.textColor}" />
+  
+  <text x="${cx}" y="${cy + 70}" text-anchor="middle" fill="${config.textColor}" font-size="64px" font-weight="900">${grade.grade}</text>
+  
+  <g transform="translate(0, ${cy + 120})">
+    <text x="${width / 6}" y="0" text-anchor="middle" fill="${config.textColor}" opacity="0.6" font-size="14px">Commits</text>
+    <text x="${width / 6}" y="25" text-anchor="middle" fill="${config.textColor}" font-size="20px" font-weight="bold">${stats.total_commits}</text>
+
+    <text x="${width / 2}" y="0" text-anchor="middle" fill="${config.textColor}" opacity="0.6" font-size="14px">Contributed</text>
+    <text x="${width / 2}" y="25" text-anchor="middle" fill="${config.textColor}" font-size="20px" font-weight="bold">${stats.total_contributed}</text>
+
+    <text x="${width * 5 / 6}" y="0" text-anchor="middle" fill="${config.textColor}" opacity="0.6" font-size="14px">Star Earn</text>
+    <text x="${width * 5 / 6}" y="25" text-anchor="middle" fill="${config.textColor}" font-size="20px" font-weight="bold">${stats.total_stars}</text>
+  </g>
+</svg>`;
+  }
+
   const width = 495;
   const height = 200;
   const padding = 25;
@@ -124,8 +204,6 @@ export function buildSVG(
   const radius = 42;
   const circumference = 2 * Math.PI * radius;
   const dashoffset = circumference - (grade.percent / 100) * circumference;
-
-  const config = parseTheme(searchParams);
 
   const is3D = config.themeName === 'isometri';
   const offset = is3D ? 8 : 0;
