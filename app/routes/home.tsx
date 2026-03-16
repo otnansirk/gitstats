@@ -160,7 +160,7 @@ export default function App() {
     }
   };
 
-  const baseUrl = "https://gitstats-api.krisnantobiyuh.workers.dev/api";
+  const baseUrl = "https://gitstats.kirimna.com/api";
   const queryParams = new URLSearchParams({
     username: username,
     theme: config.theme,

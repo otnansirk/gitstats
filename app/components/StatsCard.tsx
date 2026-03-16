@@ -54,6 +54,11 @@ export function StatsCard({ stats, loading, error, config }: StatsCardProps) {
   const lineHeight = 28;
   const valueX = 220;
 
+  const is3D = config.theme === 'isometri';
+  const offset = is3D ? 8 : 0;
+  const rectWidth = width - 1 - offset;
+  const rectHeight = height - 1 - offset;
+
   return (
     <svg
       width="100%"
@@ -64,13 +69,24 @@ export function StatsCard({ stats, loading, error, config }: StatsCardProps) {
       className="w-full h-auto drop-shadow-sm max-w-[495px] mx-auto"
       style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
     >
+      {is3D && (
+        <rect
+          x={0.5 + offset}
+          y={0.5 + offset}
+          rx={config.borderRadius}
+          height={rectHeight}
+          width={rectWidth}
+          fill={config.borderColor}
+          stroke="none"
+        />
+      )}
       <rect
         data-testid="card-bg"
         x="0.5"
         y="0.5"
         rx={config.borderRadius}
-        height={height - 1}
-        width={width - 1}
+        height={rectHeight}
+        width={rectWidth}
         fill={config.bgColor}
         stroke={config.hideBorder ? 'none' : config.borderColor}
         strokeOpacity={1}

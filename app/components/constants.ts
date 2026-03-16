@@ -32,6 +32,14 @@ export const THEMES: Record<string, Theme> = {
     titleColor: '#f92672',
     iconColor: '#a6e22e',
     borderColor: '#3e3d32'
+  },
+  isometri: {
+    name: 'Isometri',
+    bgColor: '#161B22',
+    textColor: '#D9E0E4',
+    titleColor: '#00C896',
+    iconColor: '#FF4D6D',
+    borderColor: '#2D333B'
   }
 };
 

@@ -12,6 +12,7 @@ export interface RenderConfig extends ThemeConfig {
   showIcons: boolean;
   borderRadius: number;
   hideBorder: boolean;
+  themeName?: string;
 }
 
 export const THEMES: Record<string, ThemeConfig> = {
@@ -43,6 +44,13 @@ export const THEMES: Record<string, ThemeConfig> = {
     iconColor: '#a6e22e',
     borderColor: '#3e3d32',
   },
+  isometri: {
+    bgColor: '#161B22',
+    textColor: '#D9E0E4',
+    titleColor: '#00C896',
+    iconColor: '#FF4D6D',
+    borderColor: '#2D333B',
+  },
 };
 
 const SVGIcons = {
@@ -68,6 +76,7 @@ function parseTheme(searchParams: URLSearchParams): RenderConfig {
   const themeKey = searchParams.get('theme');
   if (themeKey && THEMES[themeKey]) {
     Object.assign(config, THEMES[themeKey]);
+    config.themeName = themeKey;
   } else {
     const customColors = [
       'bg_color',
@@ -118,9 +127,15 @@ export function buildSVG(
 
   const config = parseTheme(searchParams);
 
+  const is3D = config.themeName === 'isometri';
+  const offset = is3D ? 8 : 0;
+  const rectWidth = width - 1 - offset;
+  const rectHeight = height - 1 - offset;
+
   return `
 <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none" xmlns="http://www.w3.org/2000/svg" style="font-family: system-ui, -apple-system, sans-serif;">
-  <rect x="0.5" y="0.5" rx="${config.borderRadius}" height="${height - 1}" width="${width - 1}" fill="${config.bgColor}" stroke="${config.hideBorder ? 'none' : config.borderColor}" stroke-opacity="1" />
+  ${is3D ? `<rect x="${0.5 + offset}" y="${0.5 + offset}" rx="${config.borderRadius}" height="${rectHeight}" width="${rectWidth}" fill="${config.borderColor}" stroke="none" />` : ''}
+  <rect x="0.5" y="0.5" rx="${config.borderRadius}" height="${rectHeight}" width="${rectWidth}" fill="${config.bgColor}" stroke="${config.hideBorder ? 'none' : config.borderColor}" stroke-opacity="1" />
   <g transform="translate(${padding}, ${padding + 10})">
     <text x="0" y="0" fill="${config.titleColor}" font-weight="bold" font-size="18px">${stats.name}'s GitHub Stats</text>
   </g>
