@@ -49,11 +49,11 @@ export function StatsCard({ stats, loading, error, config }: StatsCardProps) {
   const dashoffset = circumference - (percent / 100) * circumference;
 
   if (config.layout === 'gauge') {
-    const width = 400;
-    const height = 400;
+    const width = 340;
+    const height = 440;
     const cx = width / 2;
-    const cy = 240;
-    const gaugeRadius = 130;
+    const cy = 250;
+    const gaugeRadius = 120;
 
     let gaugeTicks = [];
     const numTicks = 60;
@@ -101,7 +101,7 @@ export function StatsCard({ stats, loading, error, config }: StatsCardProps) {
         viewBox={`0 0 ${width} ${height}`}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-auto drop-shadow-sm max-w-[400px] mx-auto"
+        className="w-full h-auto drop-shadow-sm max-w-[340px] mx-auto"
         style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
       >
         {is3D && (
@@ -128,6 +128,9 @@ export function StatsCard({ stats, loading, error, config }: StatsCardProps) {
         />
         
         <text x={cx} y="50" textAnchor="middle" fill={config.titleColor} fontWeight="bold" fontSize="22px">
+          {stats.name || 'GitHub User'}
+        </text>
+        <text x={cx} y="75" textAnchor="middle" fill={config.textColor} opacity="0.8" fontSize="14px">
           GitHub Stats {new Date().getFullYear()}
         </text>
         
@@ -141,20 +144,20 @@ export function StatsCard({ stats, loading, error, config }: StatsCardProps) {
         
         <g transform={`translate(0, ${cy + 120})`}>
           <text x={width / 6} y="0" textAnchor="middle" fill={config.textColor} opacity="0.6" fontSize="14px">Commits</text>
-          <text x={width / 6} y="25" textAnchor="middle" fill={config.textColor} fontSize="20px" fontWeight="bold">{stats.commits}</text>
+          <text x={width / 6} y="30" textAnchor="middle" fill={config.textColor} fontSize="22px" fontWeight="bold">{stats.commits}</text>
 
           <text x={width / 2} y="0" textAnchor="middle" fill={config.textColor} opacity="0.6" fontSize="14px">Contributed</text>
-          <text x={width / 2} y="25" textAnchor="middle" fill={config.textColor} fontSize="20px" fontWeight="bold">{stats.contributed}</text>
+          <text x={width / 2} y="30" textAnchor="middle" fill={config.textColor} fontSize="22px" fontWeight="bold">{stats.contributed}</text>
 
-          <text x={width * 5 / 6} y="0" textAnchor="middle" fill={config.textColor} opacity="0.6" fontSize="14px">Star Earn</text>
-          <text x={width * 5 / 6} y="25" textAnchor="middle" fill={config.textColor} fontSize="20px" fontWeight="bold">{stats.total_stars}</text>
+          <text x={width * 5 / 6} y="0" textAnchor="middle" fill={config.textColor} opacity="0.6" fontSize="14px">Star earn</text>
+          <text x={width * 5 / 6} y="30" textAnchor="middle" fill={config.textColor} fontSize="22px" fontWeight="bold">{stats.total_stars}</text>
         </g>
       </svg>
     );
   }
 
   const width = 495;
-  const height = 195;
+  const height = 205;
   const padding = 25;
   const lineHeight = 28;
   const valueX = 220;

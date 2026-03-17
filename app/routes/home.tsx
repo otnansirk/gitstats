@@ -120,7 +120,6 @@ export default function App() {
     setConfig(prev => ({
       ...prev,
       theme: themeKey,
-      layout: themeKey === 'gauge' ? 'gauge' : 'classic',
       bgColor: theme.bgColor,
       textColor: theme.textColor,
       titleColor: theme.titleColor,
@@ -205,7 +204,7 @@ export default function App() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 relative z-10">
           
           <div className="lg:col-span-4 space-y-4 sm:space-y-6">
-            <ThemePresets config={config} handleThemeChange={handleThemeChange} />
+            <ThemePresets config={config} setConfig={setConfig} handleThemeChange={handleThemeChange} />
             <Customization config={config} setConfig={setConfig} handleColorChange={handleColorChange} />
           </div>
 

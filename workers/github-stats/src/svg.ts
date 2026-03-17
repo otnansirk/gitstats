@@ -128,11 +128,11 @@ export function buildSVG(
   const config = parseTheme(searchParams);
 
   if (config.layout === 'gauge') {
-    const width = 400;
-    const height = 400;
+    const width = 340;
+    const height = 440;
     const cx = width / 2;
-    const cy = 240;
-    const radius = 130;
+    const cy = 250;
+    const radius = 120;
 
     let gaugeTicks = '';
     const numTicks = 60;
@@ -174,7 +174,8 @@ export function buildSVG(
   ${is3D ? `<rect x="${0.5 + offset}" y="${0.5 + offset}" rx="${config.borderRadius}" height="${rectHeight}" width="${rectWidth}" fill="${config.borderColor}" stroke="none" />` : ''}
   <rect x="0.5" y="0.5" rx="${config.borderRadius}" height="${rectHeight}" width="${rectWidth}" fill="${config.bgColor}" stroke="${config.hideBorder ? 'none' : config.borderColor}" stroke-opacity="1" />
   
-  <text x="${cx}" y="50" text-anchor="middle" fill="${config.titleColor}" font-weight="bold" font-size="22px">GitHub Stats ${new Date().getFullYear()}</text>
+  <text x="${cx}" y="50" text-anchor="middle" fill="${config.titleColor}" font-weight="bold" font-size="22px">${stats.name || 'GitHub User'}</text>
+  <text x="${cx}" y="75" text-anchor="middle" fill="${config.textColor}" opacity="0.8" font-size="14px">GitHub Stats ${new Date().getFullYear()}</text>
   
   ${gaugeTicks}
   <line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="${config.textColor}" stroke-width="4" stroke-linecap="round" />
@@ -184,13 +185,13 @@ export function buildSVG(
   
   <g transform="translate(0, ${cy + 120})">
     <text x="${width / 6}" y="0" text-anchor="middle" fill="${config.textColor}" opacity="0.6" font-size="14px">Commits</text>
-    <text x="${width / 6}" y="25" text-anchor="middle" fill="${config.textColor}" font-size="20px" font-weight="bold">${stats.total_commits}</text>
+    <text x="${width / 6}" y="30" text-anchor="middle" fill="${config.textColor}" font-size="22px" font-weight="bold">${stats.total_commits}</text>
 
     <text x="${width / 2}" y="0" text-anchor="middle" fill="${config.textColor}" opacity="0.6" font-size="14px">Contributed</text>
-    <text x="${width / 2}" y="25" text-anchor="middle" fill="${config.textColor}" font-size="20px" font-weight="bold">${stats.total_contributed}</text>
+    <text x="${width / 2}" y="30" text-anchor="middle" fill="${config.textColor}" font-size="22px" font-weight="bold">${stats.total_contributed}</text>
 
-    <text x="${width * 5 / 6}" y="0" text-anchor="middle" fill="${config.textColor}" opacity="0.6" font-size="14px">Star Earn</text>
-    <text x="${width * 5 / 6}" y="25" text-anchor="middle" fill="${config.textColor}" font-size="20px" font-weight="bold">${stats.total_stars}</text>
+    <text x="${width * 5 / 6}" y="0" text-anchor="middle" fill="${config.textColor}" opacity="0.6" font-size="14px">Star earn</text>
+    <text x="${width * 5 / 6}" y="30" text-anchor="middle" fill="${config.textColor}" font-size="22px" font-weight="bold">${stats.total_stars}</text>
   </g>
 </svg>`;
   }

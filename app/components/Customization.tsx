@@ -21,24 +21,6 @@ export function Customization({ config, setConfig, handleColorChange }: Customiz
       
       <div className="space-y-4 sm:space-y-6">
         <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-2xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/5">
-          <label className="text-xs sm:text-sm font-medium text-slate-300 cursor-pointer pl-1">Layout</label>
-          <div className="flex bg-black/40 rounded-lg p-1 border border-white/5">
-            <button
-              onClick={() => setConfig(prev => ({ ...prev, layout: 'classic' }))}
-              className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${config.layout === 'classic' ? 'bg-teal-500 text-white' : 'text-slate-400 hover:text-slate-200'}`}
-            >
-              Classic
-            </button>
-            <button
-              onClick={() => setConfig(prev => ({ ...prev, layout: 'gauge' }))}
-              className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${config.layout === 'gauge' ? 'bg-teal-500 text-white' : 'text-slate-400 hover:text-slate-200'}`}
-            >
-              Gauge
-            </button>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-2xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/5">
           <label className="text-xs sm:text-sm font-medium text-slate-300 cursor-pointer pl-1">Show Icons</label>
           <button 
             onClick={() => setConfig(prev => ({ ...prev, showIcons: !prev.showIcons }))}

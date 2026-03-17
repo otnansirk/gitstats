@@ -4,19 +4,37 @@ import { THEMES } from './constants';
 
 interface ThemePresetsProps {
   config: ConfigState;
+  setConfig: React.Dispatch<React.SetStateAction<ConfigState>>;
   handleThemeChange: (themeKey: keyof typeof THEMES) => void;
 }
 
-export function ThemePresets({ config, handleThemeChange }: ThemePresetsProps) {
+export function ThemePresets({ config, setConfig, handleThemeChange }: ThemePresetsProps) {
   return (
     <div className="bg-white/[0.02] backdrop-blur-2xl p-5 sm:p-7 rounded-3xl border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] relative overflow-hidden group">
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
       
-      <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-        <div className="p-2.5 rounded-full bg-gradient-to-br from-purple-500/20 to-purple-500/5 border border-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.15)]">
-          <LayoutTemplate className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="p-2.5 rounded-full bg-gradient-to-br from-purple-500/20 to-purple-500/5 border border-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.15)]">
+            <LayoutTemplate className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
+          </div>
+          <h3 className="font-semibold text-base sm:text-lg text-white">Theme Presets</h3>
         </div>
-        <h3 className="font-semibold text-base sm:text-lg text-white">Theme Presets</h3>
+        
+        <div className="flex bg-black/40 rounded-lg p-1 border border-white/5">
+          <button
+            onClick={() => setConfig(prev => ({ ...prev, layout: 'classic' }))}
+            className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${config.layout === 'classic' ? 'bg-teal-500 text-white' : 'text-slate-400 hover:text-slate-200'}`}
+          >
+            Classic
+          </button>
+          <button
+            onClick={() => setConfig(prev => ({ ...prev, layout: 'gauge' }))}
+            className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${config.layout === 'gauge' ? 'bg-teal-500 text-white' : 'text-slate-400 hover:text-slate-200'}`}
+          >
+            Gauge
+          </button>
+        </div>
       </div>
       
       <div className="grid grid-cols-2 gap-2 sm:gap-3">
